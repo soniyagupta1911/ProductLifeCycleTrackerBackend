@@ -1,6 +1,7 @@
 ﻿using LifeTrackerApiService.Domain.Model;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -12,40 +13,31 @@ namespace LifeTrackerApiService.Controllers
     [ApiController]
     public class LifeTrackerController : Controller
     {
-        public IActionResult Index()
-        {
-            return View();
-        }
         Dictionary<string, string> details = new Dictionary<string, string>();
-        public async Task<Dictionary<string, string>> FetchProductNameAndExpirationDate()
+        public async Task<Dictionary<string, string>> FetchProductNameAndExpirationDate(string pname , byte[] byteArray)
         {
-           
-            string configurationFile = Path.Combine(Directory.GetCurrentDirectory(), @"Images\");
-            string[] totalfiles = Directory.GetFiles(configurationFile);
-            Dictionary<string, string> details = new Dictionary<string, string>();
+
             string imageTextContent = "";
-            for (int i = 0; i < totalfiles.Length; i++)
-            {
-
-                string imgPath = totalfiles[i];
-                string ext = Path.GetExtension(imgPath);
-                if (ext.ToLower() == ".png" || ext.ToLower() == ".jpg" || ext.ToLower() == ".jpeg")
-                {
-                     imageTextContent= await ProductDetails.readImageText(imgPath);
-                   string key= imgPath.Split("\\").AsQueryable().Last();
-                     details.Add(key, imageTextContent);
-                }
-                else
-                    Console.WriteLine(imgPath + " does not have valid extension");
-
-            }
+            Dictionary<string, string> details = new Dictionary<string, string>();
+            imageTextContent = await ProductDetails.readImageText(byteArray);
+            details.Add(pname, imageTextContent);
             return details;
         }
 
-        [HttpGet]
-        public async Task<Dictionary<string, string>> GetProductDetails()
+        [HttpPost]
+        public async Task<Dictionary<string, string>> GetProductDetails([FromBody] ImageObject imgObj)
         {
-           return await FetchProductNameAndExpirationDate();
+            byte[] bytes = Convert.FromBase64String(imgObj.image);
+            // IFormFile img = null;
+            return await FetchProductNameAndExpirationDate(imgObj.name,bytes);
         }
     }
+}
+
+public class ImageObject
+{
+    public string name { get; set; }
+
+    public string image { get; set; }
+
 }

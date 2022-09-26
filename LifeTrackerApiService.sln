@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.32802.440
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32804.467
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LifeTrackerApiService", "LifeTrackerApiService\LifeTrackerApiService.csproj", "{7081146E-E363-4E75-B41F-1CE196E7E7BE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LifeTrackerApiService", "LifeTrackerApiService\LifeTrackerApiService.csproj", "{7081146E-E363-4E75-B41F-1CE196E7E7BE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
