@@ -16,28 +16,9 @@ namespace LifeTrackerApiService.Domain.Model
     public class ProductDetails
     {
       
-        public static async Task<string> fetchProductDetailsAsync()
+        public static async Task<string> readImageText(byte[] byteArray)
         {
-            
-            string configurationFile = Path.Combine(Directory.GetCurrentDirectory(), @"Images\");
-            string[] totalfiles = Directory.GetFiles(configurationFile);
-            Dictionary<string, string> details = new Dictionary<string, string>();
-            for (int i = 0; i < totalfiles.Length; i++)
-            {
-               
-               string imgPath = totalfiles[i];
-               string ext= Path.GetExtension(imgPath);
-                if (ext.ToLower() == ".png")
-                    details.Add(imgPath, await readImageText(imgPath));
-                else
-                    Console.WriteLine(imgPath + " does not have valid extension");
-
-            }
-            return "test";
-        }
-        public static async Task<string> readImageText(string imagePath)
-        {
-            const string subscriptionKey = "55bb0af95efc44abbbdae5f8abd929b4";
+            const string subscriptionKey = "";
             const string uriBase = "https://computervisionsoniyahack.cognitiveservices.azure.com/vision/v3.2/read/analyze";
             string imageTextContent = "";
             HttpClient httpclient = new HttpClient();
@@ -51,7 +32,7 @@ namespace LifeTrackerApiService.Domain.Model
             HttpResponseMessage httpresponse = null;
             //string resultStorageLocation = null;
             // Get the image as byte array; this method is defined below  
-            byte[] imagebByteData = GetByteArrayOfImage(imagePath);
+            byte[] imagebByteData = byteArray;
             ByteArrayContent imageContent = new ByteArrayContent(imagebByteData);
             //Set content type: "application/octet-stream" or "application/json"  
             imageContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
@@ -117,20 +98,38 @@ namespace LifeTrackerApiService.Domain.Model
 
         private static string checkExpiryDate(string value)
         {
-            DateTime enteredDate = DateTime.Parse(value);
-           int dateComparisonResult= DateTime.Compare(enteredDate, DateTime.Now);
-            if(dateComparisonResult>0)
+            try
             {
-                return enteredDate.ToString();
+                DateTime enteredDate = DateTime.Parse(value);
+                Console.WriteLine(enteredDate.ToString());
+                int dateComparisonResult = DateTime.Compare(enteredDate, DateTime.Now);
+                if (dateComparisonResult > 0)
+                {
+                    return new DateTimeOffset(enteredDate).ToUnixTimeMilliseconds().ToString(); 
+;
+                }
+            }
+            catch(Exception e){
+                Console.WriteLine(e.Message);
+                try
+                {
+                    DateTime enteredDate = DateTime.ParseExact(value, "dd/MM/yyyy", null);
+                    Console.WriteLine(enteredDate.ToString());
+                    int dateComparisonResult = DateTime.Compare(enteredDate, DateTime.Now);
+                    if (dateComparisonResult > 0)
+                    {
+                        return new DateTimeOffset(enteredDate).ToUnixTimeMilliseconds().ToString();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+
+                }
             }
             return "";
+
         }
 
-        private static byte[] GetByteArrayOfImage(string imagePath)
-    {
-        FileStream filestreamObj = new FileStream(imagePath, FileMode.Open, FileAccess.Read);
-        BinaryReader binaryreaderObj = new BinaryReader(filestreamObj);
-        return binaryreaderObj.ReadBytes((int)filestreamObj.Length);
-    }
     }
 }
