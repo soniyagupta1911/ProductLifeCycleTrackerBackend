@@ -15,7 +15,7 @@ namespace LifeTrackerApiService.Domain.Model
 {
     public class ProductDetails
     {
-      
+
         public static async Task<string> readImageText(byte[] byteArray)
         {
             const string subscriptionKey = "";
@@ -86,9 +86,9 @@ namespace LifeTrackerApiService.Domain.Model
                     }
 
 
-                return expiryDate;
-            }
-                catch(Exception ex)
+                    return expiryDate;
+                }
+                catch (Exception ex)
                 {
                     Console.WriteLine(imageTextContent);
                 }
@@ -105,11 +105,12 @@ namespace LifeTrackerApiService.Domain.Model
                 int dateComparisonResult = DateTime.Compare(enteredDate, DateTime.Now);
                 if (dateComparisonResult > 0)
                 {
-                    return new DateTimeOffset(enteredDate).ToUnixTimeMilliseconds().ToString(); 
-;
+                    return new DateTimeOffset(enteredDate).ToUnixTimeMilliseconds().ToString();
+                    ;
                 }
             }
-            catch(Exception e){
+            catch (Exception e)
+            {
                 Console.WriteLine(e.Message);
                 try
                 {
